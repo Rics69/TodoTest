@@ -3,7 +3,7 @@
 import {createContext, ReactNode, useContext, useState} from "react";
 import useSWR from "swr";
 
-interface ITodo {
+export interface ITodo {
     id: number;
     title: string;
     completed: boolean;

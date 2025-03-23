@@ -3,13 +3,19 @@
 import {useState} from "react";
 import {useTodo} from "@/context/todo-context";
 import Link from "next/link";
+import type {ITodo} from "@/context/todo-context";
 
 const TodoList = () => {
-    const { todos, filter, setFilter, toggleCompletion, search, setSearch, loading, error } = useTodo();
+    const context = useTodo();
+    if (!context) {
+        throw new Error('TodoContext должен использоваться внутри TodoContextProvider');
+    }
+    
+    const { todos, filter, toggleCompletion, search, loading, error } = context;
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
 
-    const filteredTodos = todos.filter(todo => {
+    const filteredTodos = todos.filter((todo: ITodo) => {
         if (filter === 'completed') return todo.completed;
         if (filter === 'pending') return !todo.completed;
         return todo.title.toLowerCase().includes(search.toLowerCase());
@@ -32,7 +38,7 @@ const TodoList = () => {
                             </li>
                         ))
                     ) : (
-                        displayedTodos.map(todo => (
+                        displayedTodos.map((todo: ITodo) => (
                             <li key={todo.id} className="border-b py-2 flex justify-between items-center">
                                 <Link href={`/todos/${todo.id}`} className="text-blue-500 hover:underline">{todo.title}</Link>
                                 <button
